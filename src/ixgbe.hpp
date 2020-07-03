@@ -16,7 +16,7 @@ const unsigned int MAX_QUEUES = 64;
 // allocated for each rx queue, keeps state for the receive function
 struct ixgbe_rx_queue {
     volatile union ixgbe_adv_rx_desc *descriptors;
-    std::shared_ptr<Mempool> mempool;
+    Mempool *mempool;
     uint16_t num_entries;
     // position we are reading from
     uint16_t rx_index;
@@ -27,7 +27,7 @@ struct ixgbe_rx_queue {
 // allocated for each tx queue, keeps state for the transmit function
 struct ixgbe_tx_queue {
     volatile union ixgbe_adv_tx_desc *descriptors;
-    std::shared_ptr<Mempool> mempool;
+    Mempool *mempool;
     uint16_t num_entries;
     // position to clean up descriptors that where sent out by the nic
     uint16_t clean_index;
@@ -39,9 +39,7 @@ struct ixgbe_tx_queue {
 
 class IxgbeDevice : public IxyDevice {
 public:
-    static auto
-    init(const std::string &pci_addr, uint16_t num_rx_queues,
-         uint16_t num_tx_queues) -> std::unique_ptr<IxgbeDevice> {
+    static auto init(const std::string &pci_addr, uint16_t num_rx_queues, uint16_t num_tx_queues) -> std::unique_ptr<IxgbeDevice> {
         if (getuid()) {
             warn("not running as root, this will probably fail");
         }

@@ -21,10 +21,26 @@ public:
     auto operator=(const Packet &) -> Packet & = delete;
 
     // re-add implicitly removed move constructor
-    Packet(Packet &&) = default;
+    Packet(Packet &&old) noexcept: addr_virt{old.addr_virt},
+                                   addr_phys{old.addr_phys},
+                                   len{old.len},
+                                   pool{old.pool},
+                                   pool_entry{old.pool_entry} {
+        old.pool = nullptr;
+    }
 
     // re-add implicitly removed move assignment
-    auto operator=(Packet &&) -> Packet & = default;
+    auto operator=(Packet &&old) noexcept -> Packet & {
+        addr_virt = old.addr_virt;
+        addr_phys = old.addr_phys;
+        len = old.len;
+        pool = old.pool;
+        pool_entry = old.pool_entry;
+
+        old.pool = nullptr;
+
+        return *this;
+    }
 
     ~Packet() {
         if (pool) {
@@ -38,7 +54,7 @@ public:
         }
 
         return *(addr_virt + n);
-    };
+    }
 
     [[nodiscard]] auto get_virt_addr() -> uint8_t * {
         return addr_virt;
@@ -53,18 +69,17 @@ public:
     }
 
 private:
-    Packet(uint8_t *addr_virt, uint64_t addr_phys, uint64_t len, std::shared_ptr<Mempool> pool, uint64_t pool_entry)
-            :
+    Packet(uint8_t *addr_virt, uint64_t addr_phys, uint64_t len, Mempool *pool, uint64_t pool_entry) :
             addr_virt{addr_virt},
             addr_phys{addr_phys},
             len{len},
-            pool{std::move(pool)},
+            pool{pool},
             pool_entry{pool_entry} {}
 
     uint8_t *addr_virt;
     uint64_t addr_phys;
     uint64_t len;
-    std::shared_ptr<Mempool> pool;
+    Mempool *pool;
     uint64_t pool_entry;
 };
 

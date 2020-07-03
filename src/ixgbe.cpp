@@ -370,7 +370,7 @@ auto IxgbeDevice::tx_batch(uint16_t queue_id, std::deque<Packet> &buffer) -> uin
 
         queue->bufs_in_use.push_back(p.pool_entry);
 
-        p.pool.reset();
+        p.pool = nullptr;
 
         queue->tx_index = wrap_ring(queue->tx_index, queue->num_entries);
 

@@ -1,7 +1,6 @@
 #ifndef IXY_MEMPOOL_HPP
 #define IXY_MEMPOOL_HPP
 
-#include <memory>
 #include <optional>
 #include <vector>
 #include <stack>
@@ -17,11 +16,11 @@ class Mempool {
     friend class Packet;
 
 public:
-    static auto allocate(uint32_t num_entries, uint32_t entry_size) -> std::shared_ptr<Mempool>;
+    static auto allocate(uint32_t num_entries, uint32_t entry_size) -> Mempool *;
 
-    static auto alloc_pkt(std::shared_ptr<Mempool> &pool, uint32_t packet_size) -> std::optional<Packet>;
+    static auto alloc_pkt(Mempool *pool, uint32_t packet_size) -> std::optional<Packet>;
 
-    static auto alloc_pkt_batch(std::shared_ptr<Mempool> &pool, std::deque<Packet> &buffer, uint32_t num_packets,
+    static auto alloc_pkt_batch(Mempool *pool, std::deque<Packet> &buffer, uint32_t num_packets,
                                 uint32_t packet_size) -> uint32_t;
 
 private:
