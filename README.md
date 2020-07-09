@@ -65,6 +65,28 @@ We currently have a simple check if the device is actually a NIC, but trying to 
 	
 	which means that I have to pass `0000:03:00.0` as parameter to use it.
 
+## Performance
+
+Running the forwarder example on a single core of a Xeon E3-1230 v2 CPU @ 3.3 GHz under full bidirectional load at 20 Gbit/s with 64 byte packets, i.e. 2x 14.88 million packets per second (Mpps), yields the following throughput results with varying batch sizes:
+
+![Performance with different batch sizes, CPU at 3.3 GHz](performance.png)
+
+Three points stand out:
+
+1. Using C++'s `std::shared_ptr<T>` in our [packet data structure](https://github.com/ixy-languages/ixy.cpp/blob/bc5cbb20bb4f3756c5842da6efa0e60af6252a1b/include/ixy/packet.hpp) to reference the `Mempool` has a major impact on performance (see branch `master` vs. `raw_ptr`).
+2. `g++ (8.3.0-6)` applies better optimizations than `clang++ (7.0.1-8)`, resulting in a throughput difference of >30%. This performance gap still exists when building ixy.cpp with newer versions of `clang++`, e.g. `10.0.1-+rc4-1`.
+3. Rust's and C++'s best case benchmark results are almost identical although ixy.rs uses a shared pointer to reference the `Mempool` while ixy.cpp uses a raw pointer, and ixy.rs was compiled with LLVM while ixy.cpp was compiled with GCC.
+
+For a comparison of all the drivers, have a look at the [performance results](https://github.com/ixy-languages/ixy-languages#Performance) in the ixy-languages repository.
+
+### Why is Rust's shared pointer faster than C++'s?
+
+Rust provides two different data types to share ownership: `Arc<T>` and `Rc<T>`.
+While the first one uses atomic operations for its reference counting (`Arc` = "atomically reference counted"), the second one -- which was used in ixy.rs -- does not.
+C++ on the other hand only offers atomic reference counting via `std::shared_ptr<T>`.
+
+Replacing `Rc<T>` in ixy.rs with `Arc<T>` yields a performance loss of 2 Mpps at a batch size of 8, i.e. almost comparable to the performance difference between using a raw pointer in C++ and using `std::shared_ptr<T>`.
+
 ## License
 
 ixy.cpp is licensed under the MIT license.
