@@ -19,4 +19,4 @@ add_library(ixy src/ixy.cpp src/ixgbe.cpp src/mempool.cpp src/memory.cpp src/pci
 target_include_directories(ixy PUBLIC ${PROJECT_SOURCE_DIR}/include PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
 add_executable(forwarder examples/forwarder.cpp)
-target_link_libraries(forwarder PRIVATE ixy PRIVATE stdc++fs)
+target_link_libraries(forwarder PRIVATE ixy)
