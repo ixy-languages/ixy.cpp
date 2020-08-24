@@ -2,6 +2,7 @@
 #define IXY_MEMPOOL_HPP
 
 #include <memory>
+#include <optional>
 #include <vector>
 #include <stack>
 
@@ -23,7 +24,7 @@ private:
                                                physical_addr{std::move(physical_addr)},
                                                free_stack{std::move(free_stack)} {}
 
-    [[nodiscard]] auto alloc_buf() -> uint64_t;
+    [[nodiscard]] auto alloc_buf() -> std::optional<uint64_t>;
 
     void free_buf(uint64_t id);
 

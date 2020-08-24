@@ -239,11 +239,15 @@ void IxgbeDevice::start_rx_queue(uint16_t queue_id) {
     for (int i = 0; i < queue->num_entries; i++) {
         auto buf = queue->mempool->alloc_buf();
 
+        if (!buf.has_value()) {
+            error("failed to allocate rx descriptor");
+        }
+
         volatile union ixgbe_adv_rx_desc *rxd = queue->descriptors + i;
-        rxd->read.pkt_addr = queue->mempool->get_phys_addr(buf);
+        rxd->read.pkt_addr = queue->mempool->get_phys_addr(buf.value());
         rxd->read.hdr_addr = 0;
 
-        queue->bufs_in_use.push_back(buf);
+        queue->bufs_in_use.push_back(buf.value());
     }
 
     // enable queue and wait if necessary
@@ -288,7 +292,13 @@ auto IxgbeDevice::rx_batch(uint16_t queue_id, std::deque<Packet> &buffer, uint32
             auto buf = queue->bufs_in_use.at(rx_index);
 
             auto new_buf = queue->mempool->alloc_buf();
-            queue->bufs_in_use.at(rx_index) = new_buf;
+
+            // break if there is no free buffer in the memory pool
+            if (!new_buf.has_value()) {
+                break;
+            }
+
+            queue->bufs_in_use.at(rx_index) = new_buf.value();
 
             auto pool = queue->mempool;
 
@@ -298,7 +308,7 @@ auto IxgbeDevice::rx_batch(uint16_t queue_id, std::deque<Packet> &buffer, uint32
             buffer.push_back(std::move(p));
 
             // reset the descriptor
-            desc_ptr->read.pkt_addr = pool->get_phys_addr(new_buf);
+            desc_ptr->read.pkt_addr = pool->get_phys_addr(new_buf.value());
             desc_ptr->read.hdr_addr = 0; // this resets the flags
 
             // want to read the next one in the next iteration, but we still need the last/current to update RDT later
