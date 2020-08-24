@@ -27,9 +27,9 @@ auto Mempool::allocate(uint32_t num_entries, uint32_t entry_size) -> std::shared
     return std::make_shared<Mempool>(std::move(pool));
 }
 
-auto Mempool::alloc_buf() -> uint64_t {
+auto Mempool::alloc_buf() -> std::optional<uint64_t> {
     if (this->free_stack.empty()) {
-        error("failed to allocate rx descriptor - pool empty");
+        return {};
     }
 
     uint64_t buf = this->free_stack.top();
