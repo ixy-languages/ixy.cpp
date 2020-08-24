@@ -21,3 +21,6 @@ target_link_libraries(ixy PRIVATE stdc++fs)
 
 add_executable(forwarder examples/forwarder.cpp)
 target_link_libraries(forwarder PRIVATE ixy)
+
+add_executable(generator examples/generator.cpp)
+target_link_libraries(generator PRIVATE ixy)
