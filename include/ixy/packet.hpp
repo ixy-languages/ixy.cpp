@@ -11,6 +11,8 @@ namespace ixy {
 class Packet {
     friend class IxgbeDevice;
 
+    friend class Mempool;
+
 public:
     // remove copy constructor
     Packet(const Packet &) = delete;

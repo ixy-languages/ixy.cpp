@@ -8,6 +8,9 @@
 
 namespace ixy {
 
+// forward-declare Packet
+class Packet;
+
 class Mempool {
     friend class IxgbeDevice;
 
@@ -15,6 +18,11 @@ class Mempool {
 
 public:
     static auto allocate(uint32_t num_entries, uint32_t entry_size) -> std::shared_ptr<Mempool>;
+
+    static auto alloc_pkt(std::shared_ptr<Mempool> &pool, uint32_t packet_size) -> std::optional<Packet>;
+
+    static auto alloc_pkt_batch(std::shared_ptr<Mempool> &pool, std::deque<Packet> &buffer, uint32_t num_packets,
+                                uint32_t packet_size) -> uint32_t;
 
 private:
     Mempool(uint8_t *base_addr, uint32_t buf_size, uint32_t num_entries, std::vector<uint64_t> physical_addr,

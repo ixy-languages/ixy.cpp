@@ -2,6 +2,7 @@
 
 #include "log.hpp"
 #include "ixy/mempool.hpp"
+#include "ixy/packet.hpp"
 #include "memory.hpp"
 
 namespace ixy {
@@ -25,6 +26,36 @@ auto Mempool::allocate(uint32_t num_entries, uint32_t entry_size) -> std::shared
     }
 
     return std::make_shared<Mempool>(std::move(pool));
+}
+
+auto Mempool::alloc_pkt(std::shared_ptr<Mempool> &pool, uint32_t packet_size) -> std::optional<Packet> {
+    if (packet_size <= pool->buf_size) {
+        auto buf = pool->alloc_buf();
+
+        if (buf.has_value()) {
+            auto id = buf.value();
+
+            return Packet(pool->get_virt_addr(id), pool->get_phys_addr(id), packet_size, pool, id);
+        }
+    }
+
+    return {};
+}
+
+auto Mempool::alloc_pkt_batch(std::shared_ptr<Mempool> &pool, std::deque<Packet> &buffer, uint32_t num_packets,
+                              uint32_t packet_size) -> uint32_t {
+    uint32_t allocated = 0;
+
+    while (auto p = alloc_pkt(pool, packet_size)) {
+        buffer.push_back(std::move(p.value()));
+
+        allocated += 1;
+        if (allocated >= num_packets) {
+            break;
+        }
+    }
+
+    return allocated;
 }
 
 auto Mempool::alloc_buf() -> std::optional<uint64_t> {
