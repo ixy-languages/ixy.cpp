@@ -47,11 +47,11 @@ public:
         }
 
         if (num_rx_queues > MAX_QUEUES) {
-            error("cannot configure " << num_rx_queues << " rx queues: limit is " << MAX_QUEUES);
+            error("cannot configure {} rx queues: limit is {}", num_rx_queues, MAX_QUEUES);
         }
 
         if (num_tx_queues > MAX_QUEUES) {
-            error("cannot configure " << num_tx_queues << " tx queues: limit is " << MAX_QUEUES);
+            error("cannot configure {} tx queues: limit is {}", num_tx_queues, MAX_QUEUES);
         }
 
         std::vector<ixgbe_rx_queue> rx_queues;

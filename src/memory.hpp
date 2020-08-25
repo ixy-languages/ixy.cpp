@@ -38,7 +38,7 @@ struct dma_memory {
     close(fd);
 
     if (!phy) {
-        error("failed to translate virtual address " << virt << " to physical address");
+        error("failed to translate virtual address {} to physical address", virt);
     }
 
     // bits 0-54 are the page number

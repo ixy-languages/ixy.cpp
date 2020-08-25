@@ -1,4 +1,5 @@
-#include <iostream>
+// TODO: replace with <format>
+#include <fmt/core.h>
 
 #include "ixy/ixy.hpp"
 #include "ixy/stats.hpp"
@@ -45,8 +46,8 @@ static uint16_t calc_ip_checksum(const uint8_t *data, uint32_t len) {
 
 auto main(int argc, char *argv[]) -> int {
     if (argc != 2) {
-        std::cout << argv[0] << " generates packets on a single port." << std::endl;
-        std::cout << "Usage: " << argv[0] << " <pci bus id1>" << std::endl;
+        fmt::print("{} generates packets on a single port.\n", argv[0]);
+        fmt::print("Usage: {} <pci bus id1>\n", argv[0]);
         return 1;
     }
 

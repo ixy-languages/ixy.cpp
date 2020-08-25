@@ -12,7 +12,7 @@ auto Mempool::allocate(uint32_t num_entries, uint32_t entry_size) -> std::shared
     // require entries that neatly fit into the page size, this makes the memory pool much easier
     // otherwise our base_addr + index * size formula would be wrong because we can't cross a page-boundary
     if (HUGE_PAGE_SIZE % entry_size) {
-        error("entry size must be a divisor of the huge page size " << HUGE_PAGE_SIZE);
+        error("entry size must be a divisor of the huge page size {}", HUGE_PAGE_SIZE);
     }
 
     struct dma_memory mem = memory_allocate_dma(num_entries * entry_size, false);

@@ -52,7 +52,7 @@ void enable_dma(const std::string &pci_addr) {
 
 auto pci_map_resource(const std::string &pci_addr) -> std::pair<uint8_t *, size_t> {
     fs::path path{"/sys/bus/pci/devices/" + pci_addr + "/resource0"};
-    debug("mapping PCI resource at " << path);
+    debug("mapping PCI resource at {}", path.string());
     remove_driver(pci_addr);
     enable_dma(pci_addr);
     int fd = open(path.c_str(), O_RDWR);
@@ -77,7 +77,7 @@ auto
 pci_open_resource(const std::string &pci_addr, const std::string &resource,
                   std::ios_base::openmode flags) -> std::fstream {
     fs::path path{"/sys/bus/pci/devices/" + pci_addr + "/" + resource};
-    debug("opening PCI resource at " << path);
+    debug("opening PCI resource at {}", path.string());
     auto s = std::fstream(path, flags);
     if (!s) {
         error("failed to open pci resource");

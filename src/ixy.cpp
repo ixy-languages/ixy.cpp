@@ -17,7 +17,7 @@ auto ixy_init(const std::string &pci_addr, uint16_t rx_queues, uint16_t tx_queue
     config.close();
 
     if (class_id != 2) {
-        error("device " << pci_addr << " is not a NIC");
+        error("device {} is not a NIC", pci_addr);
     }
 
     if (vendor_id == 0x1af4 && device_id >= 0x1000) {

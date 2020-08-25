@@ -1,4 +1,5 @@
-#include <iostream>
+// TODO: replace with <format>
+#include <fmt/core.h>
 
 #include "ixy/ixy.hpp"
 #include "ixy/stats.hpp"
@@ -24,8 +25,8 @@ forward(std::deque<Packet> &buffer, IxyDevice &rx_dev, uint16_t rx_queue, IxyDev
 
 auto main(int argc, char *argv[]) -> int {
     if (argc != 3) {
-        std::cout << argv[0] << " forwards packets between two ports." << std::endl;
-        std::cout << "Usage: " << argv[0] << " <pci bus id2> <pci bus id1>" << std::endl;
+        fmt::print("{} forwards packets between two ports.\n", argv[0]);
+        fmt::print("Usage: {} <pci bus id2> <pci bus id1>\n", argv[0]);
         return 1;
     }
 

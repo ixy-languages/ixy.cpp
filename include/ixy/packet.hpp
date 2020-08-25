@@ -1,7 +1,7 @@
 #ifndef IXY_PACKET_HPP
 #define IXY_PACKET_HPP
 
-#include <iostream>
+#include <fmt/core.h>
 #include <memory>
 
 #include "mempool.hpp"
@@ -34,7 +34,7 @@ public:
 
     [[nodiscard]] auto at(uint64_t n) -> uint8_t & {
         if (n >= len) {
-            throw std::out_of_range{"tried to access byte " + std::to_string(n) + " out of " + std::to_string(len) + " bytes"};
+            throw std::out_of_range{fmt::format("tried to access byte {} out of {} bytes", n, len)};
         }
 
         return *(addr_virt + n);

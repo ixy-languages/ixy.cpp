@@ -25,7 +25,7 @@ constexpr auto wrap_ring(uint16_t index, uint16_t ring_size) -> uint16_t {
 
 // see section 4.6.3
 void IxgbeDevice::reset_and_init() {
-    info("resetting device " << pci_addr);
+    info("resetting device {}", pci_addr);
 
     // section 4.6.3.1 - disable all interrupts
     set_reg32(IXGBE_EIMC, 0x7FFFFFFF);
@@ -38,12 +38,11 @@ void IxgbeDevice::reset_and_init() {
     // section 4.6.3.1 - disable interrupts again after reset
     set_reg32(IXGBE_EIMC, 0x7FFFFFFF);
 
-    info("initializing device " << pci_addr);
+    info("initializing device {}", pci_addr);
 
     auto mac = get_mac_addr();
 
-    info("mac address: " << std::hex << unsigned(mac[0]) << ":" << unsigned(mac[1]) << ":" << unsigned(mac[2])
-                         << ":" << unsigned(mac[3]) << ":" << unsigned(mac[4]) << ":" << unsigned(mac[5]));
+    info("mac address: {:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
     // section 4.6.3 - wait for EEPROM auto read completion
     wait_set_reg32(IXGBE_EEC, IXGBE_EEC_ARD);
@@ -129,7 +128,7 @@ void IxgbeDevice::init_rx() {
 
     // per-queue config, same for all queues
     for (uint16_t i = 0; i < num_rx_queues; i++) {
-        debug("initializing rx queue " << i);
+        debug("initializing rx queue {}", i);
         // enable advanced rx descriptors, we could also get away with legacy descriptors, but they aren't really easier
         set_reg32(IXGBE_SRRCTL(i),
                   (get_reg32(IXGBE_SRRCTL(i)) & ~IXGBE_SRRCTL_DESCTYPE_MASK) | IXGBE_SRRCTL_DESCTYPE_ADV_ONEBUF);
@@ -145,8 +144,8 @@ void IxgbeDevice::init_rx() {
         set_reg32(IXGBE_RDBAL(i), static_cast<uint32_t>(mem.phy & 0xFFFFFFFFull));
         set_reg32(IXGBE_RDBAH(i), static_cast<uint32_t>(mem.phy >> 32u));
         set_reg32(IXGBE_RDLEN(i), ring_size_bytes);
-        debug("rx ring " << i << " phy addr:  0x" << std::hex << mem.phy);
-        debug("rx ring " << i << " virt addr: 0x" << std::hex << (uintptr_t) mem.virt);
+        debug("rx ring {} phys addr: {:#x}", i, mem.phy);
+        debug("rx ring {} virt addr: {:#x}", i, (uintptr_t) mem.virt);
         // set ring to empty at start
         set_reg32(IXGBE_RDH(i), 0);
         set_reg32(IXGBE_RDT(i), 0);
@@ -195,7 +194,7 @@ void IxgbeDevice::init_tx() {
 
     // per-queue config for all queues
     for (uint16_t i = 0; i < num_tx_queues; i++) {
-        debug("initializing tx queue " << i);
+        debug("initializing tx queue {}", i);
 
         // setup descriptor ring, see section 7.1.9
         auto ring_size_bytes = NUM_TX_QUEUE_ENTRIES * sizeof(union ixgbe_adv_tx_desc);
@@ -205,8 +204,8 @@ void IxgbeDevice::init_tx() {
         set_reg32(IXGBE_TDBAL(i), static_cast<uint32_t>(mem.phy & 0xFFFFFFFFull));
         set_reg32(IXGBE_TDBAH(i), static_cast<uint32_t>(mem.phy >> 32u));
         set_reg32(IXGBE_TDLEN(i), ring_size_bytes);
-        debug("tx ring " << i << " phy addr:  0x" << std::hex << mem.phy);
-        debug("tx ring " << i << " virt addr: 0x" << std::hex << (uintptr_t) mem.virt);
+        debug("tx ring {} phys addr: {:#x}", i, mem.phy);
+        debug("tx ring {} virt addr: {:#x}", i, (uintptr_t) mem.virt);
 
         // descriptor writeback magic values, important to get good performance and low PCIe overhead
         // see 7.2.3.4.1 and 7.2.3.5 for an explanation of these values and how to find good ones
@@ -229,7 +228,7 @@ void IxgbeDevice::init_tx() {
 }
 
 void IxgbeDevice::start_rx_queue(uint16_t queue_id) {
-    debug("starting rx queue " << queue_id);
+    debug("starting rx queue {}", queue_id);
     auto queue = &rx_queues.at(queue_id);
 
     if (queue->num_entries & (queue->num_entries - 1)) {
@@ -260,7 +259,7 @@ void IxgbeDevice::start_rx_queue(uint16_t queue_id) {
 }
 
 void IxgbeDevice::start_tx_queue(uint16_t queue_id) {
-    debug("starting tx queue " << queue_id);
+    debug("starting tx queue {}", queue_id);
     struct ixgbe_tx_queue *queue = &tx_queues.at(queue_id);
     if (queue->num_entries & unsigned(queue->num_entries - 1)) {
         error("number of queue entries must be a power of 2");
@@ -429,7 +428,7 @@ void IxgbeDevice::wait_for_link() {
         std::this_thread::sleep_for(std::chrono::milliseconds(poll_interval));
         max_wait -= poll_interval;
     }
-    info("link speed is " << std::dec << get_link_speed() << " Mbit/s");
+    info("link speed is {} Mbit/s", get_link_speed());
 }
 
 auto IxgbeDevice::get_link_speed() -> uint32_t {
@@ -481,7 +480,7 @@ inline void IxgbeDevice::wait_clear_reg32(uint64_t reg, uint32_t mask) {
     __asm__ volatile ("" : : : "memory");
     uint32_t cur;
     while (cur = *(reinterpret_cast<volatile uint32_t *>(addr + reg)), (cur & mask) != 0) {
-        debug("waiting for flags " << mask << " in register " << reg << " to clear, current value " << cur);
+        debug("waiting for flags {} in register {} to clear, current value {}", mask, reg, cur);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         __asm__ volatile ("" : : : "memory");
     }
@@ -491,7 +490,7 @@ inline void IxgbeDevice::wait_set_reg32(uint64_t reg, uint32_t mask) {
     __asm__ volatile ("" : : : "memory");
     uint32_t cur;
     while (cur = *(reinterpret_cast<volatile uint32_t *>(addr + reg)), (cur & mask) != mask) {
-        debug("waiting for flags " << mask << " in register " << reg << ", current value " << cur);
+        debug("waiting for flags {} in register {}, current value {}", mask, reg, cur);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         __asm__ volatile ("" : : : "memory");
     }
