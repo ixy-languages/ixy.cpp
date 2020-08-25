@@ -1,6 +1,7 @@
 #ifndef IXY_STATS_HPP
 #define IXY_STATS_HPP
 
+#include <iomanip>
 #include <iostream>
 #include <ctime>
 
@@ -47,19 +48,20 @@ struct device_stats {
     };
 
     void print_stats() {
-        printf("[%s] RX: %zu bytes %zu packets\n", dev.get_pci_addr().c_str(), rx_bytes, rx_pkts);
-        printf("[%s] TX: %zu bytes %zu packets\n", dev.get_pci_addr().c_str(), tx_bytes, tx_pkts);
+        std::cout << "[" << dev.get_pci_addr() << "] RX: " << rx_bytes << " bytes " << rx_pkts << "packets"
+                  << std::endl;
+        std::cout << "[" << dev.get_pci_addr() << "] TX: " << tx_bytes << " bytes " << tx_pkts << "packets"
+                  << std::endl;
     };
 
     void print_stats_diff(struct device_stats &stats_new, uint64_t nanos) const {
-        printf("[%s] RX: %d Mbit/s %.2f Mpps\n", stats_new.dev.get_pci_addr().c_str(),
-               diff_mbit(stats_new.rx_bytes, rx_bytes, stats_new.rx_pkts, rx_pkts, nanos),
-               diff_mpps(stats_new.rx_pkts, rx_pkts, nanos)
-        );
-        printf("[%s] TX: %d Mbit/s %.2f Mpps\n", stats_new.dev.get_pci_addr().c_str(),
-               diff_mbit(stats_new.tx_bytes, tx_bytes, stats_new.tx_pkts, tx_pkts, nanos),
-               diff_mpps(stats_new.tx_pkts, tx_pkts, nanos)
-        );
+        std::cout << std::fixed << std::setprecision(2) << "[" << stats_new.dev.get_pci_addr() << "] RX: "
+                  << diff_mbit(stats_new.rx_bytes, rx_bytes, stats_new.rx_pkts, rx_pkts, nanos) << " Mbit/s "
+                  << diff_mpps(stats_new.rx_pkts, rx_pkts, nanos) << " Mpps" << std::endl;
+
+        std::cout << std::fixed << std::setprecision(2) << "[" << stats_new.dev.get_pci_addr() << "] TX: "
+                  << diff_mbit(stats_new.tx_bytes, tx_bytes, stats_new.tx_pkts, tx_pkts, nanos) << " Mbit/s "
+                  << diff_mpps(stats_new.tx_pkts, tx_pkts, nanos) << " Mpps" << std::endl;
     };
 
     IxyDevice &dev;
