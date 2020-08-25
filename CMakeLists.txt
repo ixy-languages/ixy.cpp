@@ -4,7 +4,7 @@ project(ixy
         DESCRIPTION "C++ rewrite of the ixy network driver"
         LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(
         -Wall
