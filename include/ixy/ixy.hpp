@@ -27,7 +27,7 @@ public:
 
     /// Sets the layer 2 address of the device.
     /// @param mac  MAC address to be set
-    virtual void set_mac_addr(std::array<uint8_t, 6> &mac) = 0;
+    virtual void set_mac_addr(const std::array<uint8_t, 6> &mac) = 0;
 
     /// Receives a batch of packets.
     /// @param queue_id     Receive (RX) queue to be used

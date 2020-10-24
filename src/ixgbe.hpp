@@ -78,7 +78,7 @@ public:
 
     [[nodiscard]] auto get_mac_addr() -> std::array<uint8_t, 6> override;
 
-    void set_mac_addr(std::array<uint8_t, 6> &mac) override;
+    void set_mac_addr(const std::array<uint8_t, 6> &mac) override;
 
     auto rx_batch(uint16_t queue_id, std::deque<Packet> &buffer, uint32_t packets) -> uint32_t override;
 

@@ -102,7 +102,7 @@ auto IxgbeDevice::get_mac_addr() -> std::array<uint8_t, 6> {
     };
 }
 
-void IxgbeDevice::set_mac_addr(std::array<uint8_t, 6> &mac) {
+void IxgbeDevice::set_mac_addr(const std::array<uint8_t, 6> &mac) {
     auto low = mac.at(0) + (mac.at(1) << 8u) + (mac.at(2) << 16u) + (mac.at(3) << 24u);
     auto high = mac.at(4) + (mac.at(5) << 8u);
 
