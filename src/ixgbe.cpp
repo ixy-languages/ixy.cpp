@@ -214,7 +214,7 @@ void IxgbeDevice::init_tx() {
         auto txdctl = get_reg32(IXGBE_TXDCTL(i));
         // there are no defines for this in ixgbe_type.hpp for some reason
         // pthresh: 6:0, hthresh: 14:8, wthresh: 22:16
-        txdctl &= ~(0x3Fu | (0x3Fu << 8u) | (0x3Fu << 16u)); // clear bits
+        txdctl &= ~(0x7Fu | (0x7Fu << 8u) | (0x7Fu << 16u)); // clear bits
         txdctl |= (36u | (8u << 8u) | (4u << 16u)); // from DPDK
         set_reg32(IXGBE_TXDCTL(i), txdctl);
 
