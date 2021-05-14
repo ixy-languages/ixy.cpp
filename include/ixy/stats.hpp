@@ -1,11 +1,11 @@
 #ifndef IXY_STATS_HPP
 #define IXY_STATS_HPP
 
+#include "ixy.hpp"
+
 #include <iomanip>
 #include <iostream>
 #include <ctime>
-
-#include "ixy.hpp"
 
 namespace ixy {
 

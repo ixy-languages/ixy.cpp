@@ -1,10 +1,10 @@
 #ifndef IXY_MEMORY_HPP
 #define IXY_MEMORY_HPP
 
+#include "log.hpp"
+
 #include <fcntl.h>
 #include <unistd.h>
-
-#include "log.hpp"
 
 namespace ixy {
 

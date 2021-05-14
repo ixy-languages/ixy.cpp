@@ -1,10 +1,10 @@
 #ifndef IXY_PACKET_HPP
 #define IXY_PACKET_HPP
 
+#include "mempool.hpp"
+
 #include <iostream>
 #include <memory>
-
-#include "mempool.hpp"
 
 namespace ixy {
 

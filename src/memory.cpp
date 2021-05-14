@@ -1,9 +1,8 @@
-#include <fcntl.h>
-#include <sstream>
-#include <sys/mman.h>
-
 #include "memory.hpp"
+
 #include "fs.hpp"
+
+#include <sys/mman.h>
 
 namespace ixy {
 

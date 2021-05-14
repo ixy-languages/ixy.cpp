@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "ixy/ixy.hpp"
 #include "ixy/stats.hpp"
 

@@ -1,9 +1,9 @@
 #ifndef IXY_IXY_HPP
 #define IXY_IXY_HPP
 
-#include <deque>
-
 #include "packet.hpp"
+
+#include <deque>
 
 namespace ixy {
 

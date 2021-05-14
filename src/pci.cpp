@@ -1,13 +1,14 @@
+#include "pci.hpp"
+
+#include "log.hpp"
+#include "fs.hpp"
+
 #include <cassert>
 #include <sys/file.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
-
-#include "pci.hpp"
-#include "log.hpp"
-#include "fs.hpp"
 
 namespace ixy {
 

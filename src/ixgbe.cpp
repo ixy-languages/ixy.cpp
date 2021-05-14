@@ -1,11 +1,11 @@
-#include <cstring>
-#include <cassert>
-#include <thread>
-
 #include "ixgbe.hpp"
+
+#include "ixy/stats.hpp"
 #include "ixgbe_type.hpp"
 #include "memory.hpp"
-#include "ixy/stats.hpp"
+
+#include <cassert>
+#include <thread>
 
 namespace ixy {
 

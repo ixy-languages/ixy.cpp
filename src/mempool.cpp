@@ -1,9 +1,10 @@
-#include <cassert>
-
-#include "log.hpp"
 #include "ixy/mempool.hpp"
+
 #include "ixy/packet.hpp"
+#include "log.hpp"
 #include "memory.hpp"
+
+#include <cassert>
 
 namespace ixy {
 

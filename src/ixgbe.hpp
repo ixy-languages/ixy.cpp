@@ -1,13 +1,13 @@
 #ifndef IXY_IXGBE_HPP
 #define IXY_IXGBE_HPP
 
-#include <vector>
-#include <unistd.h>
-
 #include "ixy/ixy.hpp"
+#include "ixy/mempool.hpp"
 #include "log.hpp"
 #include "pci.hpp"
-#include "ixy/mempool.hpp"
+
+#include <vector>
+#include <unistd.h>
 
 namespace ixy {
 

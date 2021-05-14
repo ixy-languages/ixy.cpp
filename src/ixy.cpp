@@ -1,9 +1,9 @@
-#include <memory>
-#include <fstream>
-
 #include "ixy/ixy.hpp"
+
 #include "pci.hpp"
 #include "ixgbe.hpp"
+
+#include <fstream>
 
 namespace ixy {
 
